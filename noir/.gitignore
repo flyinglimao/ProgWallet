@@ -1,0 +1,8 @@
+# compile artifacts
+/target
+/contract
+
+# proof artifacts
+/proofs
+Prover.toml
+Verifier.toml
