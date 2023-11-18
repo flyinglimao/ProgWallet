@@ -8,6 +8,7 @@ import { Guard } from "./_components/guards/Guard";
 import { useCodegen } from "./_hooks/useCodegen";
 import { bytesToHex } from "viem";
 import { useSenderAddress } from "./_hooks/useSenderAddress";
+import { NetworkModal } from "../../_components/NetworkModal";
 
 export type Wallet = {
   name: string;
@@ -26,7 +27,7 @@ export default function Editor() {
     salt: "",
     wallet: "",
     verifier: "",
-    network: "sepolia",
+    network: "",
     rule: {
       default: { type: "never" },
       destincations: [],
@@ -36,7 +37,7 @@ export default function Editor() {
     },
   });
   const { wallet } = useParams<{ wallet: string }>();
-  const address = useSenderAddress(data.salt);
+  const address = useSenderAddress(data.salt, data.network);
 
   useEffect(() => {
     setData((old) => ({
@@ -70,6 +71,11 @@ export default function Editor() {
 
   return (
     <main className="my-4 py-4">
+      {data.network ? null : (
+        <NetworkModal
+          setNetwork={(network: string) => setData((e) => ({ ...e, network }))}
+        />
+      )}
       <div className="mx-auto my-4 flex max-w-7xl justify-between items-center">
         <h2 className="text-2xl">
           {data?.name ? (
@@ -102,6 +108,10 @@ export default function Editor() {
               }))
             }
           />
+        </div>
+        <div className="w-full flex items-center justify-between p-4 border-b">
+          <span>Network:</span>
+          <span>{data.network}</span>
         </div>
         <div className="w-full flex items-center justify-between p-4 border-b">
           <span>Wallet Address:</span>

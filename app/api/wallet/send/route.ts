@@ -8,9 +8,10 @@ import {
 import {
   factoryAddress,
   initVerifierAddress,
-  rpcUrl,
+  bundlerRpcUrl,
   chains,
   entryPointAddress,
+  publicRpcUrl,
 } from "@/app/constants";
 import abi from "../factoryAbi.json";
 import { bundlerActions, getAccountNonce } from "permissionless";
@@ -23,10 +24,10 @@ export async function POST(req: Request) {
 
   const client = createPublicClient({
     chain: chains[network],
-    transport: http(rpcUrl[network]),
+    transport: http(publicRpcUrl[network]),
   });
   const bundlerClient = createClient({
-    transport: http(rpcUrl[network]),
+    transport: http(bundlerRpcUrl[network]),
     chain: chains[network],
   }).extend(bundlerActions);
   const initCode = concat([

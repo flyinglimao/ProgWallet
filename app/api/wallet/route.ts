@@ -2,7 +2,7 @@ import { concat, createPublicClient, encodeFunctionData, http } from "viem";
 import {
   factoryAddress,
   initVerifierAddress,
-  rpcUrl,
+  publicRpcUrl,
   chains,
 } from "@/app/constants";
 import abi from "./factoryAbi.json";
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
 
   const client = createPublicClient({
     chain: chains[network],
-    transport: http(rpcUrl[network]),
+    transport: http(publicRpcUrl[network]),
   });
   const initCode = concat([
     factoryAddress[network] as `0x${string}`,

@@ -7,20 +7,21 @@ import { useMemo } from "react";
 export default function Wallet() {
   const { wallet } = useParams<{ wallet: string }>();
 
-  const walletName = useMemo(() => {
+  const walletData = useMemo(() => {
     const data = window?.localStorage.getItem(`progWallet.wallet.${wallet}`);
     if (data) {
       const parsed = JSON.parse(data);
-      return parsed.name;
+      return parsed;
     }
+    return { name: "", wallet: "", verifier: "" };
   }, [wallet]);
 
   return (
     <main className="my-4 py-4">
       <div className="mx-auto my-4 flex max-w-7xl justify-between items-center">
         <h2 className="text-2xl">
-          {walletName ? (
-            walletName
+          {walletData.name ? (
+            walletData.name
           ) : (
             <span className="italic text-gray">Unnamed Wallet</span>
           )}
@@ -39,11 +40,11 @@ export default function Wallet() {
         </div>
         <div className="w-full flex items-center justify-between p-4 border-b">
           <span>Wallet Address:</span>
-          <span>Not deployed</span>
+          <span>{walletData.wallet || "Not Deployed"}</span>
         </div>
         <div className="w-full flex items-center justify-between p-4 border-b">
           <span>Verifier Address:</span>
-          <span>Not deployed</span>
+          <span>{walletData.verifier || "Not Deployed"}</span>
         </div>
       </div>
     </main>
