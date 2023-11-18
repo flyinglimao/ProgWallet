@@ -1,20 +1,12 @@
 "use client";
-
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { Destination } from "./_components/Destination";
-import { Destination as DestinationType, Rule } from "./types";
+import { Destination as DestinationType } from "./types";
 import { Guard } from "./_components/guards/Guard";
-import { useCodegen } from "./_hooks/useCodegen";
-
-type Wallet = {
-  name: string;
-  rule: Rule;
-};
+import { Wallet } from "./page";
 
 export default function Editor() {
-  const { send, status, verifier } = useCodegen();
-  const router = useRouter();
   const [data, setData] = useState<Wallet>({
     name: "",
     rule: {
@@ -35,15 +27,15 @@ export default function Editor() {
       const parsed = JSON.parse(storageData);
       setData(parsed);
     }
-  }, [wallet]);
+  }, []);
 
   const save = useCallback(() => {
     window?.localStorage.setItem(
       `progWallet.wallet.${wallet}`,
       JSON.stringify(data)
     );
-    router.push(`/wallets/${wallet}`);
-  }, [data, router, wallet]);
+    console.log(data);
+  }, [data, wallet]);
 
   return (
     <main className="my-4 py-4">
@@ -94,16 +86,8 @@ export default function Editor() {
         <div className="w-full flex items-center justify-between p-4 border-b">
           <span>Verifier Address:</span>
           <span>
-            <button
-              className="bg-green hover:bg-lightGreen disabled:opacity-70 text-white rounded px-4 py-2"
-              disabled={status === "waiting"}
-              onClick={() => send(data.rule)}
-            >
-              {status === "idle"
-                ? "Compile"
-                : status === "waiting"
-                ? "Compiling"
-                : "Deploy"}
+            <button className="bg-green hover:bg-lightGreen disabled:opacity-70 text-white rounded px-4 py-2">
+              Deploy
             </button>
           </span>
         </div>
