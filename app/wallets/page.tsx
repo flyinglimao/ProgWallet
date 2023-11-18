@@ -42,13 +42,12 @@ export default function WalletHome() {
         {walletAmount === 0 ? (
           <p className="text-center m-4">
             No wallet exists,{" "}
-            <a
-              href="#"
+            <button
               className="text-gray underline decoration-dotted"
               onClick={() => createWallet()}
             >
               create one
-            </a>
+            </button>
             ?
           </p>
         ) : (
