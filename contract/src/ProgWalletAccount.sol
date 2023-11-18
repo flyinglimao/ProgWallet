@@ -1,20 +1,24 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
+import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import {BaseAccount, UserOperation, IEntryPoint} from "./core/BaseAccount.sol";
 import {IVerifier} from "./interfaces/IVerifier.sol";
 
 /**
  * The signature of ProgWallet consists of a proof and 3 public inputs.
- * The first public input is the hash of the calldata.
- * The second and third public input is the validUntil and the validAfter timestamp.
+ * The 1st and 2nd public input are the hash of the calldata and length.
+ * The 3rd and 4th public input are the validUntil and the validAfter timestamp.
  */
-contract ProgWalletAccount is BaseAccount {
+contract ProgWalletAccount is BaseAccount, Initializable {
     IEntryPoint immutable _entryPoint;
     IVerifier _verifier;
 
-    constructor(IEntryPoint entryPoint_, IVerifier verifier_) {
+    constructor(IEntryPoint entryPoint_) {
         _entryPoint = entryPoint_;
+    }
+
+    function initialize(IVerifier verifier_) external initializer {
         _verifier = verifier_;
     }
 
@@ -58,23 +62,30 @@ contract ProgWalletAccount is BaseAccount {
     ) internal virtual override returns (uint256 validationData) {
         // we use hash of calldata as public input and let user provide it in private input
         bytes32 callDataHash = keccak256(userOp.callData);
+        // because we use a large array and let user determine the length to use in circuit
+        // we need to check the length or it may provide a hash of a smaller array to attack
+        uint256 callDataLength = userOp.callData.length;
         (bytes memory proof, bytes32[] memory publicInputs) = abi.decode(
             userOp.signature,
             (bytes, bytes32[])
         );
 
-        // force the first public input to be the hash of the calldata
-        if (callDataHash != publicInputs[0]) {
+        // ensure the calldata is the same as the one in public input
+        if (
+            callDataHash != publicInputs[0] &&
+            callDataLength != uint256(publicInputs[1])
+        ) {
             return SIG_VALIDATION_FAILED;
         }
+        // check proof, maybe we may do more checks on public inputs
         if (!_verifier.verify(proof, publicInputs)) {
             return SIG_VALIDATION_FAILED;
         }
 
-        // let publicInputs[1] be the validUntil and publicInputs[2] be the validAfter
+        // let publicInputs[2] be the validUntil and publicInputs[3] be the validAfter
         return
-            (uint256(publicInputs[1]) << 160) |
-            (uint256(publicInputs[2]) << 208);
+            (uint256(publicInputs[2]) << 160) |
+            (uint256(publicInputs[3]) << 208);
     }
 
     function _call(address target, uint256 value, bytes memory data) internal {
