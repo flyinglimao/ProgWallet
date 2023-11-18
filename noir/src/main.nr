@@ -10,8 +10,8 @@ use dep::std;
  */
 
 // u64 = 8 bytes, enough for 6 bytes in validationData
-// use 256 bytes for callData, is it enough?
-fn main(callDataHash: pub [u8; 32], callDataLength: pub u32, validUntil: pub u64, validAfter: pub u64, callData: [u8; 8192] /*CODEGEN_ARGS*/) {
+// use 512 bytes for callData for demo, but it should be larger in the release
+fn main(callDataHash: pub [u8; 32], callDataLength: pub u32, validUntil: pub u64, validAfter: pub u64, callData: [u8; 512] /*CODEGEN_ARGS*/) {
     assert(std::hash::keccak256(callData, callDataLength) == callDataHash);
     /*COCDEGEN_LOGIC*/
 }
