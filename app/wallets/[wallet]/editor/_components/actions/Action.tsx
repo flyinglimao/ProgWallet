@@ -25,8 +25,9 @@ export function Action({
   setAction: (mutation: (e: ActionType) => ActionType | null) => void;
 }) {
   return (
-    <>
+    <div className="flex items-end">
       <ActionSwitch action={action} setAction={setAction} />
+      <span className="px-8">or</span>
       <button
         className="pl-4 text-red italic"
         onClick={() => {
@@ -35,6 +36,6 @@ export function Action({
       >
         Delete this action
       </button>
-    </>
+    </div>
   );
 }

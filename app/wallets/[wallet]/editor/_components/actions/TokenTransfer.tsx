@@ -21,7 +21,6 @@ export function TokenTransfer({
             guard={action.fallback}
             setGuard={(mutation) => {
               const newGuard = mutation(action.fallback);
-              if (!newGuard) throw new Error("Cannot remove fallback guard");
               setAction((e) => {
                 return {
                   ...e,
@@ -51,7 +50,6 @@ export function TokenTransfer({
                 guard={rule.guard}
                 setGuard={(mutation) => {
                   const newGuard = mutation(action.fallback);
-                  if (!newGuard) throw new Error("Cannot remove this guard");
                   setAction((old) => {
                     const old_ = old as TokenTransferType;
                     const rules = [...old_.rules];

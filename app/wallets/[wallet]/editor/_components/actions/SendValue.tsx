@@ -18,7 +18,6 @@ export function SendValue({
             guard={action.fallback}
             setGuard={(mutation) => {
               const newGuard = mutation(action.fallback);
-              if (!newGuard) throw new Error("Cannot remove fallback guard");
               setAction((e) => {
                 return {
                   ...e,
@@ -48,7 +47,6 @@ export function SendValue({
                 guard={rule.guard}
                 setGuard={(mutation) => {
                   const newGuard = mutation(action.fallback);
-                  if (!newGuard) throw new Error("Cannot remove this guard");
                   setAction((old) => {
                     const old_ = old as SendValueType;
                     const rules = [...old_.rules];

@@ -79,6 +79,22 @@ export default function Editor() {
           <span>Rule:</span>
           <div className="w-full overflow-x-auto pl-2">
             <div>
+              When metamorphosing (updating verifier),
+              <Guard
+                guard={data.rule.metamorphoseGuard}
+                setGuard={(mutation) => {
+                  const newGuard = mutation(data.rule.metamorphoseGuard);
+                  setData((old) => ({
+                    ...old,
+                    rule: {
+                      ...old.rule,
+                      metamorphoseGuard: newGuard,
+                    },
+                  }));
+                }}
+              />
+            </div>
+            <div>
               If the destination address is not one of followings, it should{" "}
               <select
                 value={
@@ -100,24 +116,6 @@ export default function Editor() {
                 <option value="accept">Accept</option>
               </select>
               .
-            </div>
-            <div>
-              When metamorphosing (updating verifier),
-              <Guard
-                guard={data.rule.metamorphoseGuard}
-                setGuard={(mutation) => {
-                  const newGuard = mutation(data.rule.metamorphoseGuard);
-                  if (!newGuard)
-                    throw new Error("Cannot use empty guard for metamorphose");
-                  setData((old) => ({
-                    ...old,
-                    rule: {
-                      ...old.rule,
-                      metamorphoseGuard: newGuard,
-                    },
-                  }));
-                }}
-              />
             </div>
             {data.rule.destincations
               .filter((e) => e.address !== "self")

@@ -19,20 +19,26 @@ function getDefaultGuard(type: GuardType["type"]): GuardType {
     case "multisig":
       return { type: "multisig", group: [], threshold: 1 };
     case "sha256Preimage":
-      return { type: "sha256Preimage", hash: "", length: 0 };
+      return { type: "sha256Preimage", hash: "", length: 32 };
   }
 }
 
-function GuardSwitch({ guard }: { guard: GuardType }) {
+function GuardSwitch({
+  guard,
+  setGuard,
+}: {
+  guard: GuardType;
+  setGuard: (mutation: (e: GuardType) => GuardType) => void;
+}) {
   switch (guard.type) {
     case "multisig":
-      return <MultisigGuard guard={guard} />;
+      return <MultisigGuard guard={guard} setGuard={setGuard} />;
     case "sha256Preimage":
-      return <Sha256PreimageGuard guard={guard} />;
+      return <Sha256PreimageGuard guard={guard} setGuard={setGuard} />;
     case "intersection":
-      return <IntersectionLogic guard={guard} />;
+      return <IntersectionLogic guard={guard} setGuard={setGuard} />;
     case "union":
-      return <UnionLogic guard={guard} />;
+      return <UnionLogic guard={guard} setGuard={setGuard} />;
     case "never":
       return <Never />;
     case "always":
@@ -46,22 +52,13 @@ export function Guard({
   deleteGuard,
 }: {
   guard: GuardType;
-  setGuard: (mutation: (e: GuardType) => GuardType | null) => void;
+  setGuard: (mutation: (e: GuardType) => GuardType) => void;
   deleteGuard?: () => void;
 }) {
   return (
     <div>
-      <GuardSwitch guard={guard} />
-      {deleteGuard ? (
-        <button
-          className="pl-4 text-red italic"
-          onClick={() => {
-            deleteGuard();
-          }}
-        >
-          Delete this guard
-        </button>
-      ) : (
+      <GuardSwitch guard={guard} setGuard={setGuard} />
+      <div className="flex">
         <div className="pl-2 text-gray italic">
           Switch to{" "}
           <select
@@ -83,7 +80,20 @@ export function Guard({
           </select>{" "}
           guard
         </div>
-      )}
+        {deleteGuard ? (
+          <>
+            <span className="px-8">or</span>
+            <button
+              className="pl-4 text-red italic"
+              onClick={() => {
+                deleteGuard();
+              }}
+            >
+              Delete this guard
+            </button>
+          </>
+        ) : null}
+      </div>
     </div>
   );
 }
