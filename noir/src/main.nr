@@ -1,4 +1,7 @@
 use dep::std;
+mod function_sig;
+mod actions;
+mod validates;
 
 /**
  * The following arguments are static, while codegen may add other arguments
@@ -14,15 +17,26 @@ use dep::std;
 // 512 bytes: 20 bytes for dest addr, 32 bytes for value, 4 bytes for function selector, 456 bytes for function arguments
 fn main(callDataHash: pub [u8; 32], callDataLength: pub u32, validUntil: pub u64, validAfter: pub u64, callData: [u8; 512] /*CODEGEN_ARGS*/) {
     assert(std::hash::keccak256(callData, callDataLength) == callDataHash);
-    /*COCDEGEN_LOGIC*/
-}
 
-fn is_transfer(callData: [u8; 4]) -> bool {
-    callData == [169, 5, 156, 187]
-}
+    let mut dest: [u8; 20] = [0; 20];
+    for i in 0..20 {
+        dest[i] = callData[i];
+    };
+    let mut value: [u8; 32] = [0; 32];
+    for i in 0..32 {
+        value[i] = callData[i + 20];
+    };
+    let mut selector: [u8; 4] = [0; 4];
+    for i in 0..4 {
+        selector[i] = callData[i + 52];
+    };
+    let mut data: [u8; 456] = [0; 456];
+    for i in 0..456 {
+        data[i] = callData[i + 56];
+    };
 
-fn is_metamorphose(callData: [u8; 4]) -> bool {
-    callData == [79, 213, 57, 33]
+    /*CODEGEN_LOGIC*/
+
 }
 
 #[test]

@@ -1,6 +1,7 @@
 import {
   TokenTransfer as TokenTransferType,
   Action as ActionType,
+  ValueRule,
 } from "../../types";
 import { Guard } from "../guards/Guard";
 
@@ -33,13 +34,43 @@ export function TokenTransfer({
         {action.rules.map((rule, id) => (
           <div key={`rule-${id}`}>
             If transfering amount/token id
-            <select>
-              <option>&gt;=</option>
-              <option>=</option>
-              <option>&ne;</option>
+            <select
+              value={rule.op}
+              onChange={(el) => {
+                setAction((old) => {
+                  const old_ = old as TokenTransferType;
+                  const rules = [...old_.rules];
+                  rules[id].op = el.target.value as ValueRule["op"];
+                  return {
+                    ...old,
+                    rules,
+                  };
+                });
+              }}
+            >
+              <option value="gt">&gt;</option>
+              <option value="eq">=</option>
+              <option value="lt">&lt;</option>
+              <option value="ne">&ne;</option>
             </select>{" "}
-            <input type="text" placeholder="0" className="w-20" /> and target is
-            in the list:{" "}
+            <input
+              type="text"
+              placeholder="0"
+              className="w-20"
+              value={rule.limit}
+              onChange={(el) => {
+                setAction((old) => {
+                  const old_ = old as TokenTransferType;
+                  const rules = [...old_.rules];
+                  rules[id].limit = parseInt(el.target.value) || 100;
+                  return {
+                    ...old,
+                    rules,
+                  };
+                });
+              }}
+            />{" "}
+            and target is in the list:{" "}
             <input
               type="text"
               className="w-64"
@@ -88,7 +119,10 @@ export function TokenTransfer({
               const old_ = old as TokenTransferType;
               return {
                 ...old,
-                rules: [...old_.rules, { guard: { type: "never" } }],
+                rules: [
+                  ...old_.rules,
+                  { guard: { type: "never" }, op: "gt", limit: 0 },
+                ],
               };
             });
           }}

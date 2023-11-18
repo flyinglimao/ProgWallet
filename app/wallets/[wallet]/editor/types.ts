@@ -40,25 +40,22 @@ export type NamedAction = {
   type: string;
 };
 
+export type ValueRule = {
+  guard: Guard;
+  target?: string[];
+  op: "gt" | "lt" | "eq" | "ne";
+  limit: number;
+};
+
 export type TokenTransfer = NamedAction & {
   type: "tokenTransfer";
-  rules: {
-    lt?: number; // lt and eq should not be set at the same time
-    eq?: number;
-    target?: string[];
-    guard: Guard;
-  }[];
+  rules: ValueRule[];
   fallback: Guard;
 };
 
 export type SendValue = NamedAction & {
   type: "sendValue";
-  rules: {
-    lt?: number; // lt and eq should not be set at the same time
-    eq?: number;
-    target?: string[];
-    guard: Guard;
-  }[];
+  rules: ValueRule[];
   fallback: Guard;
 };
 

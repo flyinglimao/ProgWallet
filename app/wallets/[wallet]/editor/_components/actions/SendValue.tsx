@@ -1,4 +1,8 @@
-import { SendValue as SendValueType, Action as ActionType } from "../../types";
+import {
+  SendValue as SendValueType,
+  Action as ActionType,
+  ValueRule,
+} from "../../types";
 import { Guard } from "../guards/Guard";
 
 export function SendValue({
@@ -29,14 +33,43 @@ export function SendValue({
         </div>
         {action.rules.map((rule, id) => (
           <div key={`rule-${id}`}>
-            If transfering amount/token id
-            <select>
-              <option>&gt;=</option>
-              <option>=</option>
-              <option>&ne;</option>
+            If transfering amount
+            <select
+              value={rule.op}
+              onChange={(el) => {
+                setAction((old) => {
+                  const old_ = old as SendValueType;
+                  const rules = [...old_.rules];
+                  rules[id].op = el.target.value as ValueRule["op"];
+                  return {
+                    ...old,
+                    rules,
+                  };
+                });
+              }}
+            >
+              <option value="gt">&gt;</option>
+              <option value="eq">=</option>
+              <option value="lt">&lt;</option>
             </select>{" "}
-            <input type="text" placeholder="0" className="w-20" /> and target is
-            in the list:{" "}
+            <input
+              type="text"
+              placeholder="0"
+              className="w-20"
+              value={rule.limit}
+              onChange={(el) => {
+                setAction((old) => {
+                  const old_ = old as SendValueType;
+                  const rules = [...old_.rules];
+                  rules[id].limit = parseInt(el.target.value) || 100;
+                  return {
+                    ...old,
+                    rules,
+                  };
+                });
+              }}
+            />{" "}
+            and target is in the list:{" "}
             <input
               type="text"
               className="w-64"
@@ -85,7 +118,10 @@ export function SendValue({
               const old_ = old as SendValueType;
               return {
                 ...old,
-                rules: [...old_.rules, { guard: { type: "never" } }],
+                rules: [
+                  ...old_.rules,
+                  { guard: { type: "never" }, op: "gt", limit: 0 },
+                ],
               };
             });
           }}
