@@ -43,22 +43,41 @@ export function SendValue({
               className="w-64"
               placeholder="split with comma, blank for all"
             />
-            <Guard
-              guard={rule.guard}
-              setGuard={(mutation) => {
-                const newGuard = mutation(action.fallback);
-                if (!newGuard) throw new Error("Cannot remove this guard");
-                setAction((old) => {
-                  const old_ = old as SendValueType;
-                  const rules = [...old_.rules];
-                  rules[id].guard = newGuard;
-                  return {
-                    ...old,
-                    rules,
-                  };
-                });
-              }}
-            />
+            <div className="flex">
+              <Guard
+                guard={rule.guard}
+                setGuard={(mutation) => {
+                  const newGuard = mutation(action.fallback);
+                  if (!newGuard) throw new Error("Cannot remove this guard");
+                  setAction((old) => {
+                    const old_ = old as SendValueType;
+                    const rules = [...old_.rules];
+                    rules[id].guard = newGuard;
+                    return {
+                      ...old,
+                      rules,
+                    };
+                  });
+                }}
+              />
+              <span className="px-8">or</span>
+              <button
+                className="text-red italic"
+                onClick={() => {
+                  setAction((old) => {
+                    const old_ = old as SendValueType;
+                    const rules = [...old_.rules];
+                    rules.splice(id, 1);
+                    return {
+                      ...old,
+                      rules,
+                    };
+                  });
+                }}
+              >
+                Delete this rule
+              </button>
+            </div>
           </div>
         ))}
         <button

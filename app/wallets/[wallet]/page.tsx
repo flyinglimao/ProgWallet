@@ -17,7 +17,7 @@ export default function Wallet() {
 
   return (
     <main className="my-4 py-4">
-      <div className="mx-auto my-4 flex max-w-7xl justify-between align-middle">
+      <div className="mx-auto my-4 flex max-w-7xl justify-between items-center">
         <h2 className="text-2xl">
           {walletName ? (
             walletName
@@ -33,15 +33,15 @@ export default function Wallet() {
         </Link>
       </div>
       <div className="mx-auto my-4 max-w-7xl rounded border">
-        <div className="w-full flex align-middle justify-between p-4 border-b">
+        <div className="w-full flex items-center justify-between p-4 border-b">
           <span>Network:</span>
           <span>Ethereum</span>
         </div>
-        <div className="w-full flex align-middle justify-between p-4 border-b">
+        <div className="w-full flex items-center justify-between p-4 border-b">
           <span>Wallet Address:</span>
           <span>0xf8F7873f80039D59783e7059ECfF5A6C49D70d47</span>
         </div>
-        <div className="w-full flex align-middle justify-between p-4 border-b">
+        <div className="w-full flex items-center justify-between p-4 border-b">
           <span>Verifier Address:</span>
           <span>0xf8F7873f80039D59783e7059ECfF5A6C49D70d47</span>
         </div>

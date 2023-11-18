@@ -29,7 +29,7 @@ export default function WalletHome() {
 
   return (
     <main className="my-4 py-4">
-      <div className="mx-auto my-4 flex max-w-7xl justify-between align-middle">
+      <div className="mx-auto my-4 flex max-w-7xl justify-between items-center">
         <h2 className="text-2xl">Wallets</h2>
         <button
           className="rounded bg-green px-4 py-2 text-white hover:bg-lightGreen"

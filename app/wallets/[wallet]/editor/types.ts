@@ -62,12 +62,7 @@ export type SendValue = NamedAction & {
   fallback: Guard;
 };
 
-export type Metamorphose = NamedAction & {
-  type: "metamorphose";
-  guard: Guard;
-};
-
-export type Action = TokenTransfer | SendValue | Metamorphose;
+export type Action = TokenTransfer | SendValue;
 
 export type Destination = {
   address: string;
@@ -77,5 +72,6 @@ export type Destination = {
 
 export type Rule = {
   destincations: Destination[];
+  metamorphoseGuard: Guard;
   default: Guard; // if no action matches, should we accept or reject?
 };

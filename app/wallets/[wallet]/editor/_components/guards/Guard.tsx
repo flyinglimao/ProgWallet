@@ -50,7 +50,7 @@ export function Guard({
   deleteGuard?: () => void;
 }) {
   return (
-    <>
+    <div>
       <GuardSwitch guard={guard} />
       {deleteGuard ? (
         <button
@@ -84,6 +84,6 @@ export function Guard({
           guard
         </div>
       )}
-    </>
+    </div>
   );
 }

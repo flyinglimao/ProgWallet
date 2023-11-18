@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { Destination } from "./_components/Destination";
 import { Destination as DestinationType, Rule } from "./types";
-import { Metamorphose } from "./_components/actions/Metamorphose";
+import { Guard } from "./_components/guards/Guard";
 
 type Wallet = {
   name: string;
@@ -16,22 +16,10 @@ export default function Editor() {
     name: "",
     rule: {
       default: { type: "never" },
-      destincations: [
-        {
-          address: "self",
-          actions: [
-            {
-              type: "metamorphose",
-              guard: {
-                type: "never",
-              },
-            },
-          ],
-          default: {
-            type: "never",
-          },
-        },
-      ],
+      destincations: [],
+      metamorphoseGuard: {
+        type: "never",
+      },
     },
   });
   const { wallet } = useParams<{ wallet: string }>();
@@ -53,7 +41,7 @@ export default function Editor() {
 
   return (
     <main className="my-4 py-4">
-      <div className="mx-auto my-4 flex max-w-7xl justify-between align-middle">
+      <div className="mx-auto my-4 flex max-w-7xl justify-between items-center">
         <h2 className="text-2xl">
           {data?.name ? (
             data.name
@@ -61,7 +49,7 @@ export default function Editor() {
             <span className="italic text-gray">Unnamed Wallet</span>
           )}
         </h2>
-        <div className="flex align-middle">
+        <div className="flex items-center">
           <button
             className="rounded bg-green px-4 py-2 text-white hover:bg-lightGreen"
             onClick={() => save()}
@@ -71,7 +59,7 @@ export default function Editor() {
         </div>
       </div>
       <div className="mx-auto my-4 max-w-7xl rounded border">
-        <div className="w-full flex align-middle justify-between p-4 border-b">
+        <div className="w-full flex items-center justify-between p-4 border-b">
           <span>Name:</span>
           <input
             type="text"
@@ -79,11 +67,11 @@ export default function Editor() {
             placeholder="Name this wallet (local)"
           />
         </div>
-        <div className="w-full flex align-middle justify-between p-4 border-b">
+        <div className="w-full flex items-center justify-between p-4 border-b">
           <span>Wallet Address:</span>
           <span>0xf8F7873f80039D59783e7059ECfF5A6C49D70d47</span>
         </div>
-        <div className="w-full flex align-middle justify-between p-4 border-b">
+        <div className="w-full flex items-center justify-between p-4 border-b">
           <span>Verifier Address:</span>
           <span>0xf8F7873f80039D59783e7059ECfF5A6C49D70d47</span>
         </div>
@@ -113,32 +101,52 @@ export default function Editor() {
               </select>
               .
             </div>
-            {data.rule.destincations.map((dest, id) => (
-              <Destination
-                key={`dest-${id}`}
-                destination={dest}
-                setDestination={(
-                  mutation: (e: DestinationType) => DestinationType | null
-                ) => {
-                  const newDest = mutation(dest);
-                  setData((old) => {
-                    const newDestAry = [...old.rule.destincations];
-                    if (!newDest) {
-                      newDestAry.splice(id, 1);
-                    } else {
-                      newDestAry[id] = newDest;
-                    }
-                    return {
-                      ...old,
-                      rule: {
-                        ...old.rule,
-                        destincations: newDestAry,
-                      },
-                    };
-                  });
+            <div>
+              When metamorphosing (updating verifier),
+              <Guard
+                guard={data.rule.metamorphoseGuard}
+                setGuard={(mutation) => {
+                  const newGuard = mutation(data.rule.metamorphoseGuard);
+                  if (!newGuard)
+                    throw new Error("Cannot use empty guard for metamorphose");
+                  setData((old) => ({
+                    ...old,
+                    rule: {
+                      ...old.rule,
+                      metamorphoseGuard: newGuard,
+                    },
+                  }));
                 }}
               />
-            ))}
+            </div>
+            {data.rule.destincations
+              .filter((e) => e.address !== "self")
+              .map((dest, id) => (
+                <Destination
+                  key={`dest-${id}`}
+                  destination={dest}
+                  setDestination={(
+                    mutation: (e: DestinationType) => DestinationType | null
+                  ) => {
+                    const newDest = mutation(dest);
+                    setData((old) => {
+                      const newDestAry = [...old.rule.destincations];
+                      if (!newDest) {
+                        newDestAry.splice(id, 1);
+                      } else {
+                        newDestAry[id] = newDest;
+                      }
+                      return {
+                        ...old,
+                        rule: {
+                          ...old.rule,
+                          destincations: newDestAry,
+                        },
+                      };
+                    });
+                  }}
+                />
+              ))}
             <button
               className=" text-gray italic"
               onClick={() => {

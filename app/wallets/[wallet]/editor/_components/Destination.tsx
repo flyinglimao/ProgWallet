@@ -3,7 +3,6 @@ import {
   Action as ActionType,
   Destination,
   Destination as DestinationType,
-  Metamorphose,
   SendValue,
   TokenTransfer,
 } from "../types";
@@ -24,10 +23,6 @@ function getDefaultAction(type: ActionType["type"]): ActionType {
         rules: [],
         fallback: { type: "never" },
       } as SendValue;
-
-    case "metamorphose":
-      // it's used one and only one, hence we won't never use it via this switch
-      throw new Error("Cannot add metamorphose action to external contract");
   }
 }
 
@@ -115,7 +110,6 @@ export function Destination({
             <option value=""></option>
             <option value="tokenTransfer">ERC20/ERC721 Token Transfer</option>
             <option value="sendValue">Send Value</option>
-            <option value="metamorphose">Metamorphose (Update Verifier)</option>
           </select>{" "}
           action
         </div>
