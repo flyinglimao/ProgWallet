@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { Destination } from "./_components/Destination";
 import { Destination as DestinationType, Rule } from "./types";
+import { Metamorphose } from "./_components/actions/Metamorphose";
 
 type Wallet = {
   name: string;
@@ -14,8 +15,23 @@ export default function Editor() {
   const [data, setData] = useState<Wallet>({
     name: "",
     rule: {
-      default: "reject",
-      destincations: [],
+      default: { type: "never" },
+      destincations: [
+        {
+          address: "self",
+          actions: [
+            {
+              type: "metamorphose",
+              guard: {
+                type: "never",
+              },
+            },
+          ],
+          default: {
+            type: "never",
+          },
+        },
+      ],
     },
   });
   const { wallet } = useParams<{ wallet: string }>();
@@ -77,13 +93,17 @@ export default function Editor() {
             <div>
               If the destination address is not one of followings, it should{" "}
               <select
-                value={data?.rule.default}
+                value={
+                  data?.rule.default.type === "never" ? "reject" : "accept"
+                }
                 onChange={(el) =>
                   setData((e) => ({
                     ...e,
                     rule: {
                       ...e.rule,
-                      default: el.target.value as "reject" | "accept",
+                      default: {
+                        type: el.target.value === "reject" ? "never" : "always",
+                      },
                     },
                   }))
                 }
@@ -129,7 +149,11 @@ export default function Editor() {
                       ...old.rule,
                       destincations: [
                         ...old.rule.destincations,
-                        { address: "", actions: [], default: "reject" },
+                        {
+                          address: "",
+                          actions: [],
+                          default: { type: "never" },
+                        },
                       ],
                     },
                   };

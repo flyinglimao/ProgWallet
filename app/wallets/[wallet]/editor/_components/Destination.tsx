@@ -14,17 +14,20 @@ function getDefaultAction(type: ActionType["type"]): ActionType {
     case "tokenTransfer":
       return {
         type: "tokenTransfer",
+        rules: [],
+        fallback: { type: "never" },
       } as TokenTransfer;
 
     case "sendValue":
       return {
         type: "sendValue",
+        rules: [],
+        fallback: { type: "never" },
       } as SendValue;
 
     case "metamorphose":
-      return {
-        type: "metamorphose",
-      } as Metamorphose;
+      // it's used one and only one, hence we won't never use it via this switch
+      throw new Error("Cannot add metamorphose action to external contract");
   }
 }
 
@@ -64,11 +67,13 @@ export function Destination({
       />
       , if no rule is matched, it should{" "}
       <select
-        value={destination.default}
+        value={destination.default.type === "never" ? "reject" : "accept"}
         onChange={(el) =>
           setDestination((e) => ({
             ...e,
-            default: el.target.value as "reject" | "accept",
+            default: {
+              type: el.target.value === "reject" ? "never" : "always",
+            },
           }))
         }
       >
@@ -80,10 +85,15 @@ export function Destination({
         <Action
           key={`action-${id}`}
           action={action}
-          deleteAction={() => {
+          setAction={(mutation) => {
+            const newAction = mutation(action);
             setDestination((dest) => {
               const newActions = [...dest.actions];
-              newActions.splice(id, 1);
+              if (newAction) {
+                newActions[id] = newAction;
+              } else {
+                newActions.splice(id, 1);
+              }
               return {
                 ...dest,
                 actions: newActions,

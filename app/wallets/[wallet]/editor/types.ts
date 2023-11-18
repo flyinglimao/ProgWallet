@@ -20,51 +20,62 @@ export type Sha256Preimage = {
   length: number; // because noir doesn't support dynamic input, we need to use a static length (with padding)
 };
 
-export type Guard = Multisig | Sha256Preimage | IntersectionLogic | UnionLogic;
+export type Never = {
+  type: "never";
+};
+
+export type Always = {
+  type: "always";
+};
+
+export type Guard =
+  | Multisig
+  | Sha256Preimage
+  | IntersectionLogic
+  | UnionLogic
+  | Never
+  | Always;
 
 export type NamedAction = {
   type: string;
-  guard: Guard;
 };
 
-export type TokenTransferEq = NamedAction & {
-  type: "tokenTransferEq";
-  limit: number;
+export type TokenTransfer = NamedAction & {
+  type: "tokenTransfer";
+  rules: {
+    lt?: number; // lt and eq should not be set at the same time
+    eq?: number;
+    target?: string[];
+    guard: Guard;
+  }[];
+  fallback: Guard;
 };
 
-export type TokenTransferLt = NamedAction & {
-  type: "tokenTransferEq";
-  limit: number;
-};
-
-export type TokenTransferTarget = NamedAction & {
-  type: "tokenTransferEq";
-  limit: number;
-};
-
-export type ValueLe = NamedAction & {
-  type: "valueLe";
-  limit: number;
+export type SendValue = NamedAction & {
+  type: "sendValue";
+  rules: {
+    lt?: number; // lt and eq should not be set at the same time
+    eq?: number;
+    target?: string[];
+    guard: Guard;
+  }[];
+  fallback: Guard;
 };
 
 export type Metamorphose = NamedAction & {
   type: "metamorphose";
+  guard: Guard;
 };
 
-export type Action =
-  | TokenTransferEq
-  | TokenTransferLt
-  | TokenTransferTarget
-  | ValueLe
-  | Metamorphose;
+export type Action = TokenTransfer | SendValue | Metamorphose;
 
-export interface Destination {
+export type Destination = {
   address: string;
   actions: Action[];
-  default: "reject" | "accept"; // if no action matches, should we accept or reject?
-}
+  default: Guard; // if no action matches, should we accept or reject?
+};
 
-export interface Rule {
+export type Rule = {
   destincations: Destination[];
-  default: "reject" | "accept"; // if no action matches, should we accept or reject?
-}
+  default: Guard; // if no action matches, should we accept or reject?
+};
