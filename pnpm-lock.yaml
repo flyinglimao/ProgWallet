@@ -8,6 +8,9 @@ dependencies:
   next:
     specifier: 14.0.3
     version: 14.0.3(react-dom@18.2.0)(react@18.2.0)
+  permissionless:
+    specifier: ^0.0.12
+    version: 0.0.12(viem@1.19.3)
   react:
     specifier: ^18
     version: 18.2.0
@@ -4202,6 +4205,14 @@ packages:
 
   /pathe@1.1.1:
     resolution: {integrity: sha512-d+RQGp0MAYTIaDBIMmOfMwz3E+LOZnxx1HZd5R18mmCZY0QBlK0LDZfPc8FW8Ed2DlvsuE6PRjroDY+wg4+j/Q==}
+    dev: false
+
+  /permissionless@0.0.12(viem@1.19.3):
+    resolution: {integrity: sha512-hH4YCp+UtrdUjh3DYTa3aJdrzj9csQ6+KPdQUHuVOQinyphxJKlm4Chrz1xhd4mlfdoRDUkIhfL/jQldfia10g==}
+    peerDependencies:
+      viem: ^1.14.0
+    dependencies:
+      viem: 1.19.3(typescript@5.2.2)
     dev: false
 
   /picocolors@1.0.0:

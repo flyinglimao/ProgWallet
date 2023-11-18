@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "next": "14.0.3",
+    "permissionless": "^0.0.12",
     "react": "^18",
     "react-dom": "^18",
     "solc": "0.8.23-fixed",

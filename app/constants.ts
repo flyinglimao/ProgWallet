@@ -8,6 +8,11 @@ export const rpcUrl: { [key in keyof typeof chains]?: string } = {
 export const factoryAddress: { [key in keyof typeof chains]?: string } = {
   sepolia: "0xF40F9807048D4Bc65c174CA62A1E45C6bfDeC207",
 };
+
+export const entryPointAddress: { [key in keyof typeof chains]?: string } = {
+  sepolia: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
+};
+
 export const initVerifierAddress: {
   [key in keyof typeof chains]?: string;
 } = {

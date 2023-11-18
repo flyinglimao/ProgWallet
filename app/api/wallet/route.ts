@@ -1,4 +1,4 @@
-import { createPublicClient, encodeFunctionData, http } from "viem";
+import { concat, createPublicClient, encodeFunctionData, http } from "viem";
 import {
   factoryAddress,
   initVerifierAddress,
@@ -17,11 +17,15 @@ export async function POST(req: Request) {
     chain: chains[network],
     transport: http(rpcUrl[network]),
   });
-  const initCode = encodeFunctionData({
-    abi,
-    functionName: "create",
-    args: [data.salt, initVerifierAddress[network]],
-  });
+  const initCode = concat([
+    factoryAddress[network] as `0x${string}`,
+    encodeFunctionData({
+      abi,
+      functionName: "create",
+      args: [data.salt, initVerifierAddress[network]],
+    }),
+  ]);
+
   return Response.json({
     address: await client.readContract({
       address: factoryAddress[network] as `0x${string}`,
