@@ -159,9 +159,8 @@ export function codegen(rule: Rule): string {
   }
 
   const cond = [];
-  // I guess we need to check the dest here
   cond.push(`
-    if function_sig::is_metamorphose(selector) {
+    if function_sig::is_metamorphose(selfSelector) {
       pass = ${guardCodegen(rule.metamorphoseGuard)};
     }
   `);

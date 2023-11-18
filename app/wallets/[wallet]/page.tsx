@@ -35,15 +35,15 @@ export default function Wallet() {
       <div className="mx-auto my-4 max-w-7xl rounded border">
         <div className="w-full flex items-center justify-between p-4 border-b">
           <span>Network:</span>
-          <span>Ethereum</span>
+          <span>Not deployed</span>
         </div>
         <div className="w-full flex items-center justify-between p-4 border-b">
           <span>Wallet Address:</span>
-          <span>0xf8F7873f80039D59783e7059ECfF5A6C49D70d47</span>
+          <span>Not deployed</span>
         </div>
         <div className="w-full flex items-center justify-between p-4 border-b">
           <span>Verifier Address:</span>
-          <span>0xf8F7873f80039D59783e7059ECfF5A6C49D70d47</span>
+          <span>Not deployed</span>
         </div>
       </div>
     </main>

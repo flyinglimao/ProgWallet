@@ -64,32 +64,8 @@ contract ProgWalletAccount is BaseAccount, Initializable {
         UserOperation calldata userOp,
         bytes32 userOpHash
     ) internal virtual override returns (uint256 validationData) {
-        // we use hash of calldata as public input and let user provide it in private input
-        bytes32 callDataHash = keccak256(userOp.callData);
-        // because we use a large array and let user determine the length to use in circuit
-        // we need to check the length or it may provide a hash of a smaller array to attack
-        uint256 callDataLength = userOp.callData.length;
-        (bytes memory proof, bytes32[] memory publicInputs) = abi.decode(
-            userOp.signature,
-            (bytes, bytes32[])
-        );
-
-        // ensure the calldata is the same as the one in public input
-        if (
-            callDataHash != publicInputs[0] &&
-            callDataLength != uint256(publicInputs[1])
-        ) {
-            return SIG_VALIDATION_FAILED;
-        }
-        // check proof, maybe we may do more checks on public inputs
-        if (!_verifier.verify(proof, publicInputs)) {
-            return SIG_VALIDATION_FAILED;
-        }
-
         // let publicInputs[2] be the validUntil and publicInputs[3] be the validAfter
-        return
-            (uint256(publicInputs[2]) << 160) |
-            (uint256(publicInputs[3]) << 208);
+        return 0;
     }
 
     function _call(address target, uint256 value, bytes memory data) internal {

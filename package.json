@@ -12,7 +12,10 @@
     "next": "14.0.3",
     "react": "^18",
     "react-dom": "^18",
-    "solc": "0.8.23-fixed"
+    "solc": "0.8.23-fixed",
+    "userop": "^0.3.4",
+    "viem": "^1.19.3",
+    "wagmi": "^1.4.7"
   },
   "devDependencies": {
     "@types/node": "^20",

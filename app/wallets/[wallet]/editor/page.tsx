@@ -6,9 +6,15 @@ import { Destination } from "./_components/Destination";
 import { Destination as DestinationType, Rule } from "./types";
 import { Guard } from "./_components/guards/Guard";
 import { useCodegen } from "./_hooks/useCodegen";
+import { bytesToHex } from "viem";
+import { useSenderAddress } from "./_hooks/useSenderAddress";
 
-type Wallet = {
+export type Wallet = {
   name: string;
+  salt: string;
+  wallet: string;
+  verifier: string;
+  network: string;
   rule: Rule;
 };
 
@@ -17,6 +23,10 @@ export default function Editor() {
   const router = useRouter();
   const [data, setData] = useState<Wallet>({
     name: "",
+    salt: "",
+    wallet: "",
+    verifier: "",
+    network: "sepolia",
     rule: {
       default: { type: "never" },
       destincations: [],
@@ -26,6 +36,14 @@ export default function Editor() {
     },
   });
   const { wallet } = useParams<{ wallet: string }>();
+  const address = useSenderAddress(data.salt);
+
+  useEffect(() => {
+    setData((old) => ({
+      ...old,
+      wallet: address,
+    }));
+  }, [address]);
 
   useEffect(() => {
     const storageData = window?.localStorage.getItem(
@@ -34,6 +52,11 @@ export default function Editor() {
     if (storageData) {
       const parsed = JSON.parse(storageData);
       setData(parsed);
+    } else {
+      setData((old) => ({
+        ...old,
+        salt: bytesToHex(crypto.getRandomValues(new Uint8Array(32))),
+      }));
     }
   }, [wallet]);
 
@@ -82,14 +105,7 @@ export default function Editor() {
         </div>
         <div className="w-full flex items-center justify-between p-4 border-b">
           <span>Wallet Address:</span>
-          <span>
-            <button
-              disabled
-              className="bg-green hover:bg-lightGreen disabled:opacity-70 text-white rounded px-4 py-2"
-            >
-              Verifier must be deployed first
-            </button>
-          </span>
+          <span>{data.wallet}</span>
         </div>
         <div className="w-full flex items-center justify-between p-4 border-b">
           <span>Verifier Address:</span>
